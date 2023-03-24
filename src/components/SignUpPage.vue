@@ -65,28 +65,4 @@ const togglePasswordVisibility = () => {
     center fixed;
   background-size: contain;
 }
-
-.slide-enter-from {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-.slide-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.slide-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-leave-active {
-  transition: all 0.3s ease-in;
-}
-
-.slide-enter-to,
-.slide-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
 </style>

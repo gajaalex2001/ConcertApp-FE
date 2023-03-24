@@ -62,6 +62,5 @@ const togglePasswordVisibility = () => {
   background: url("../assets/Images/authConcertImage.jpg") no-repeat center
     center fixed;
   background-size: contain;
-  overflow: hidden;
 }
 </style>
