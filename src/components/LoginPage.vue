@@ -7,6 +7,15 @@
             <v-card elevation="8">
               <v-card-title class="text-h6 text-center"> Log in </v-card-title>
               <v-divider></v-divider>
+              <v-alert
+                class="rounded-0"
+                closable
+                v-model="loginFailed"
+                color="error"
+                icon="$error"
+                title="Error"
+                :text="loginErrorText"
+              />
               <v-card-text>
                 <v-form @submit.prevent="login" v-model="isFormValid">
                   <v-text-field
@@ -17,7 +26,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.emailRules]"
-                    v-model="inputEmail"
+                    v-model.trim="inputEmail"
                   />
                   <v-text-field
                     label="Password"
@@ -29,7 +38,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.passwordRules]"
-                    v-model="inputPassword"
+                    v-model.trim="inputPassword"
                   />
                   <v-btn
                     :disabled="!isFormValid"
@@ -40,7 +49,11 @@
                   >
                 </v-form>
                 <v-card-actions>
-                  <v-checkbox label="Remember me" hide-details />
+                  <v-checkbox
+                    v-model="isRememberMe"
+                    label="Remember me"
+                    hide-details
+                  />
                   <v-spacer />
                   No account?
                   <router-link class="pl-2" to="/register"
@@ -58,11 +71,16 @@
 
 <script setup>
 import { ref } from "vue";
-
+import { useAppStore } from "@/store/app";
 import { regexes } from "../utils/regexes.js";
+import { useRouter } from "vue-router";
 
-const inputEmail = ref('');
-const inputPassword = ref('');
+const store = useAppStore();
+const router = useRouter();
+
+const inputEmail = ref("");
+const inputPassword = ref("");
+const isRememberMe = ref(false);
 
 const isFormValid = ref(false);
 const rules = {
@@ -83,8 +101,25 @@ const rules = {
   ],
 };
 
-const login = () => {
-  console.log(`You submitted ${inputEmail.value} | ${inputPassword.value}`);
+const loginFailed = ref(false);
+const loginErrorText = ref("");
+
+const login = async () => {
+  const response = await store.login({
+    email: inputEmail.value,
+    password: inputPassword.value,
+    isRemembered: isRememberMe.value,
+  });
+
+  if (response === 200) {
+    router.push("/home");
+  } else if (response === 409) {
+    loginErrorText.value = "Account not found";
+    loginFailed.value = true;
+  } else {
+    loginErrorText.value = "Authentication error";
+    loginFailed.value = true;
+  }
 };
 
 const isPasswordVisible = ref(false);

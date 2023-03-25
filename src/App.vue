@@ -7,7 +7,15 @@
 </template>
 
 <script setup>
-//
+import { useAppStore } from './store/app';
+import { onMounted } from 'vue';
+
+const store = useAppStore();
+
+onMounted(() => {
+  store.tryLogin();
+})
+
 </script>
 
 <style>

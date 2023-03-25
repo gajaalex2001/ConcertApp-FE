@@ -9,6 +9,15 @@
                 Create an account
               </v-card-title>
               <v-divider></v-divider>
+              <v-alert
+                class="rounded-0"
+                closable
+                v-model="displaySignUpAlert"
+                :color="signUpStatus === 'error' ? 'error' : 'success'"
+                :icon="signUpStatus === 'error' ? '$error' : '$success'"
+                :title="signUpStatus === 'error' ? 'Error' : 'Success'"
+                :text="signUpAlertText"
+              />
               <v-card-text>
                 <v-form @submit.prevent="signUp" v-model="isFormValid">
                   <v-text-field
@@ -19,7 +28,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.emailRules]"
-                    v-model="inputEmail"
+                    v-model.trim="inputEmail"
                   />
 
                   <v-text-field
@@ -30,7 +39,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.firstNameRules]"
-                    v-model="inputFirstName"
+                    v-model.trim="inputFirstName"
                   />
 
                   <v-text-field
@@ -41,7 +50,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.lastNameRules]"
-                    v-model="inputLastName"
+                    v-model.trim="inputLastName"
                   />
 
                   <v-text-field
@@ -52,7 +61,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.phoneNumberRules]"
-                    v-model="inputPhoneNumber"
+                    v-model.trim="inputPhoneNumber"
                   />
 
                   <v-text-field
@@ -65,7 +74,7 @@
                     variant="outlined"
                     class="mb-2"
                     :rules="[rules.required, ...rules.passwordRules]"
-                    v-model="inputPassword"
+                    v-model.trim="inputPassword"
                   />
 
                   <v-btn
@@ -93,10 +102,12 @@
 </template>
 
 <script setup>
+import { useAppStore } from "@/store/app";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { regexes } from "../utils/regexes.js";
 
+const store = useAppStore();
 const router = useRouter();
 
 const isFormValid = ref(false);
@@ -153,10 +164,41 @@ const inputLastName = ref("");
 const inputPhoneNumber = ref("");
 const inputPassword = ref("");
 
-const signUp = () => {
-  console.log(
-    `You have submitted: ${inputEmail.value} | ${inputFirstName.value} | ${inputLastName.value} | ${inputPhoneNumber.value} | ${inputPassword.value}`
-  );
+const displaySignUpAlert = ref(false);
+const signUpAlertText = ref("");
+const signUpStatus = ref("");
+
+const signUp = async () => {
+  const response = await store.signUp({
+    email: inputEmail.value,
+    firstName: inputFirstName.value,
+    lastName: inputLastName.value,
+    phoneNumber: inputPhoneNumber.value,
+    password: inputPassword.value,
+  });
+
+  if (response === 200) {
+    resetInputFields();
+    updateAlertValues('success', 'Account was successfully created!', true);
+  } else if (response === 409) {
+    updateAlertValues('error', 'Email already exists.', true);
+  } else {
+    updateAlertValues('error', 'Sign up error.', true);
+  }
+};
+
+const updateAlertValues = (status, text, display) => {
+  signUpStatus.value = status;
+  signUpAlertText.value = text;
+  displaySignUpAlert.value = display;
+}
+
+const resetInputFields = () => {
+  inputEmail.value = null;
+  inputFirstName.value = null;
+  inputLastName.value = null;
+  inputPhoneNumber.value = null;
+  inputPassword.value = null;
 };
 
 const isPasswordVisible = ref(false);
