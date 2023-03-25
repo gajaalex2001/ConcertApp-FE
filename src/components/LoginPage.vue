@@ -130,8 +130,8 @@ const togglePasswordVisibility = () => {
 
 <style scoped>
 .background {
-  background: url("../assets/Images/authConcertImage.jpg") no-repeat center
+  background: url("../assets/Images/bg3.jpg") no-repeat center
     center fixed;
-  background-size: contain;
+  background-size: cover;
 }
 </style>
