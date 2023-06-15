@@ -95,5 +95,24 @@ export const useAppStore = defineStore("app", {
       this.user.lastName = lastName;
       this.user.phoneNumber = phoneNumber;
     },
+    async getConcerts(payload) {
+      let response = {
+        concerts: [],
+        hasError: false
+      };
+      await axios
+        .post("https://localhost:44379/api/concert/get-concerts", {
+            pageRequest: payload.PageRequest,
+            filters: payload.Filters
+        })
+        .then((result) => {
+          response.concerts = result.data;
+        })
+        .catch((_) => {
+          response.hasError = true;
+        });
+
+      return response;
+    },
   },
 });
