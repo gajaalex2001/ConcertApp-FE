@@ -97,19 +97,84 @@ export const useAppStore = defineStore("app", {
     },
     async getConcerts(payload) {
       let response = {
-        concerts: [],
-        hasError: false
+        data: [],
+        hasError: false,
       };
       await axios
         .post("https://localhost:44379/api/concert/get-concerts", {
-            pageRequest: payload.PageRequest,
-            filters: payload.Filters
+          pageRequest: payload.PageRequest,
+          filters: payload.Filters,
         })
         .then((result) => {
-          response.concerts = result.data;
+          response.data = result.data;
         })
         .catch((_) => {
           response.hasError = true;
+        });
+
+      return response;
+    },
+    async getRecommendations(payload) {
+      let response = {
+        data: [],
+        hasError: false,
+      };
+      await axios
+        .post("https://localhost:44379/api/concert/get-recommendations", {
+          email: payload,
+        })
+        .then((result) => {
+          response.data = result.data;
+        })
+        .catch((_) => {
+          response.hasError = true;
+        });
+
+      return response;
+    },
+    async getConcertDetails(payload) {
+      let response = {
+        data: null,
+        status: null,
+      };
+
+      await axios
+        .post("https://localhost:44379/api/concert/get-concert", payload)
+        .then((result) => {
+          response.data = result.data;
+          response.status = result.status;
+        })
+        .catch((error) => {
+          response.data = error.response;
+          response.status = error.response.status;
+        });
+
+      return response;
+    },
+    async addParticipant(payload) {
+      let response;
+
+      await axios
+        .post("https://localhost:44379/api/concert/add-participant", payload)
+        .then((result) => {
+          response = result;
+        })
+        .catch((error) => {
+          response = error.response;
+        });
+
+      return response;
+    },
+    async removeParticipant(payload) {
+      let response;
+
+      await axios
+        .post("https://localhost:44379/api/concert/remove-participant", payload)
+        .then((result) => {
+          response = result;
+        })
+        .catch((error) => {
+          response = error.response;
         });
 
       return response;

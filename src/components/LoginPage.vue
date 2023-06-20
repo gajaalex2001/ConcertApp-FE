@@ -112,7 +112,7 @@ const login = async () => {
   });
 
   if (response === 200) {
-    router.push("/home");
+    router.push("/concerts");
   } else if (response === 409) {
     loginErrorText.value = "Account not found";
     loginFailed.value = true;
