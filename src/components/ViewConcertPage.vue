@@ -71,7 +71,7 @@
           <v-card elevation="10" class="pa-5 mt-5" id="description-card">
             <h2>Concert Description</h2>
             <v-card-text>
-              <p v-if="concert.description !== ''">{{ concert.description }}</p>
+              <p style="white-space: pre-line;" v-if="concert.description !== ''">{{ concert.description }}</p>
               <h4 v-else>This concert has no description.</h4>
             </v-card-text>
           </v-card>
@@ -200,6 +200,7 @@ const parseDate = (dateString) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  word-wrap: break-word;  
   height: 100%;
 }
 

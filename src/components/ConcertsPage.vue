@@ -23,49 +23,6 @@
             <h2 class="pt-16 pb-2">Recommendations</h2>
 
             <v-card flat rounded="0">
-              <v-window v-model="selectedCardComputed">
-                <v-window-item
-                  v-for="concert in recommendations"
-                  :key="concert.id"
-                >
-                  <v-hover v-slot="{ isHovering, props }">
-                    <v-card
-                      class="concert-card mt-3"
-                      :elevation="isHovering ? 8 : 4"
-                      v-bind="props"
-                      hover
-                      @click="redirectToViewConcertPage(concert.id)"
-                    >
-                      <v-card-title class="card-title">{{
-                        concert.name
-                      }}</v-card-title>
-                      <v-card-text>
-                        <div class="card-description">
-                          {{ concert.description }}...
-                        </div>
-                        <div class="card-info">
-                          <div><b>Location:</b> {{ concert.location }}</div>
-                          <div>
-                            <b>Genre:</b> {{ musicGenreArray[concert.genre] }}
-                          </div>
-                          <div><b>Capacity:</b> {{ concert.capacity }}</div>
-                          <div>
-                            <b>Participants:</b> {{ concert.noParticipants }}
-                          </div>
-                          <div>
-                            <b>Start Date:</b>
-                            {{ parseDate(concert.startDate) }}
-                          </div>
-                          <div>
-                            <b>End Date:</b> {{ parseDate(concert.endDate) }}
-                          </div>
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </v-hover>
-                </v-window-item>
-              </v-window>
-
               <v-card-actions class="justify-space-between">
                 <v-btn
                   variant="plain"
@@ -96,6 +53,57 @@
                   @click="next"
                 ></v-btn>
               </v-card-actions>
+              <v-window v-model="selectedCardComputed">
+                <v-window-item
+                  v-for="concert in recommendations"
+                  :key="concert.id"
+                >
+                  <v-hover v-slot="{ isHovering, props }">
+                    <v-card
+                      class="concert-card mt-3"
+                      :elevation="isHovering ? 8 : 4"
+                      v-bind="props"
+                      hover
+                      @click="redirectToViewConcertPage(concert.id)"
+                    >
+                      <v-card-title class="card-title">{{
+                        concert.name
+                      }}</v-card-title>
+                      <v-card-text>
+                        <div
+                          v-if="concert.description !== ''"
+                          class="card-description"
+                        >
+                          {{ concert.description
+                          }}{{
+                            concert.description.length === 100 ? "..." : ""
+                          }}
+                        </div>
+                        <div v-else class="card-description">
+                          <strong>This concert has no description.</strong>
+                        </div>
+                        <div class="card-info">
+                          <div><b>Location:</b> {{ concert.location }}</div>
+                          <div>
+                            <b>Genre:</b> {{ musicGenreArray[concert.genre] }}
+                          </div>
+                          <div><b>Capacity:</b> {{ concert.capacity }}</div>
+                          <div>
+                            <b>Participants:</b> {{ concert.noParticipants }}
+                          </div>
+                          <div>
+                            <b>Start Date:</b>
+                            {{ parseDate(concert.startDate) }}
+                          </div>
+                          <div>
+                            <b>End Date:</b> {{ parseDate(concert.endDate) }}
+                          </div>
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </v-hover>
+                </v-window-item>
+              </v-window>
             </v-card>
           </div>
         </div>
@@ -119,7 +127,13 @@
             >
               <v-card-title class="card-title">{{ concert.name }}</v-card-title>
               <v-card-text>
-                <div class="card-description">{{ concert.description }}...</div>
+                <div v-if="concert.description !== ''" class="card-description">
+                  {{ concert.description
+                  }}{{ concert.description.length === 100 ? "..." : "" }}
+                </div>
+                <div v-else class="card-description">
+                  <strong>This concert has no description.</strong>
+                </div>
                 <div class="card-info">
                   <div><b>Location:</b> {{ concert.location }}</div>
                   <div><b>Genre:</b> {{ musicGenreArray[concert.genre] }}</div>
@@ -231,7 +245,7 @@ const getConcerts = async (pageRequest, filters, updateTotalPage = false) => {
     if (updateTotalPage) {
       totalPages.value =
         response.data.noItems % 5 !== 0
-          ? (response.data.noItems / 5) | (0 + 1)
+          ? ((response.data.noItems / 5) | 0) + 1
           : (response.data.noItems / 5) | 0;
     }
   }
@@ -257,8 +271,10 @@ const parseDate = (dateString) => {
     minute: "2-digit",
   };
 
-  const localDateString = new Intl.DateTimeFormat("en-US", options).format(date);
-  const formattedDate = localDateString.replace(/,\s/g, ' ');
+  const localDateString = new Intl.DateTimeFormat("en-US", options).format(
+    date
+  );
+  const formattedDate = localDateString.replace(/,\s/g, " ");
   return formattedDate;
 };
 

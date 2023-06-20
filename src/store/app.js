@@ -179,5 +179,19 @@ export const useAppStore = defineStore("app", {
 
       return response;
     },
+    async addConcert(payload) {
+      let response;
+
+      await axios
+        .post("https://localhost:44379/api/concert/create-concert", payload)
+        .then((result) => {
+          response = result;
+        })
+        .catch((error) => {
+          response = error.response;
+        });
+
+      return response;
+    },
   },
 });

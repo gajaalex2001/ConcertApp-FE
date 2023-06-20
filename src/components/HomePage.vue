@@ -9,6 +9,7 @@
         <v-btn icon="mdi-home" color="white" @click="redirectToHomePage"></v-btn>
         <v-btn icon="mdi-plus" color="white" @click="redirectToAddConcertPage"></v-btn>
         <v-btn icon="mdi-logout" color="white" @click="logout"></v-btn>
+        
       </v-app-bar>
       <router-view></router-view>
     </v-app>
