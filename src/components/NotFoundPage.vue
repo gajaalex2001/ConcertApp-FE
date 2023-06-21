@@ -3,8 +3,9 @@
     <v-main>
       <v-container class="fill-height">
         <v-row align="center" justify="center" dense>
-          <v-col cols="4">
+          <v-col cols="5">
             <h1>PAGE NOT FOUND</h1>
+            <h1>HOW DID YOU EVEN GET HERE?</h1>
           </v-col>
         </v-row>
       </v-container>

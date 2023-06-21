@@ -193,5 +193,19 @@ export const useAppStore = defineStore("app", {
 
       return response;
     },
+    async getUpcomingConcerts(payload) {
+      let response;
+
+      await axios
+        .post("https://localhost:44379/api/concert/get-upcoming-concerts", payload)
+        .then((result) => {
+          response = result;
+        })
+        .catch((error) => {
+          response = error.response;
+        });
+
+      return response;
+    }
   },
 });

@@ -116,41 +116,44 @@
           icon="info"
           text="No concerts with the given filters exist."
         />
-        <div v-for="concert in concerts" :key="concert.id">
-          <v-hover v-slot="{ isHovering, props }">
-            <v-card
-              class="concert-card"
-              :elevation="isHovering ? 8 : 4"
-              v-bind="props"
-              hover
-              @click="redirectToViewConcertPage(concert.id)"
-            >
-              <v-card-title class="card-title">{{ concert.name }}</v-card-title>
-              <v-card-text>
-                <div v-if="concert.description !== ''" class="card-description">
-                  {{ concert.description
-                  }}{{ concert.description.length === 100 ? "..." : "" }}
-                </div>
-                <div v-else class="card-description">
-                  <strong>This concert has no description.</strong>
-                </div>
-                <div class="card-info">
-                  <div><b>Location:</b> {{ concert.location }}</div>
-                  <div><b>Genre:</b> {{ musicGenreArray[concert.genre] }}</div>
-                  <div><b>Capacity:</b> {{ concert.capacity }}</div>
-                  <div><b>Participants:</b> {{ concert.noParticipants }}</div>
-                  <div>
-                    <b>Start Date:</b> {{ parseDate(concert.startDate) }}
+        <v-virtual-scroll ref="scroller" height="84vh" :items="concerts">
+          <template v-slot:default="{ item }">
+            <v-hover v-slot="{ isHovering, props }" :key="item.id">
+              <v-card
+                class="concert-card"
+                :elevation="isHovering ? 8 : 4"
+                v-bind="props"
+                hover
+                @click="redirectToViewConcertPage(item.id)"
+              >
+                <v-card-title class="card-title">{{ item.name }}</v-card-title>
+                <v-card-text>
+                  <div v-if="item.description !== ''" class="card-description">
+                    {{ item.description
+                    }}{{ item.description.length === 100 ? "..." : "" }}
                   </div>
-                  <div><b>End Date:</b> {{ parseDate(concert.endDate) }}</div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-hover>
-        </div>
+                  <div v-else class="card-description">
+                    <strong>This concert has no description.</strong>
+                  </div>
+                  <div class="card-info">
+                    <div><b>Location:</b> {{ item.location }}</div>
+                    <div><b>Genre:</b> {{ musicGenreArray[item.genre] }}</div>
+                    <div><b>Capacity:</b> {{ item.capacity }}</div>
+                    <div><b>Participants:</b> {{ item.noParticipants }}</div>
+                    <div>
+                      <b>Start Date:</b> {{ parseDate(item.startDate) }}
+                    </div>
+                    <div><b>End Date:</b> {{ parseDate(item.endDate) }}</div>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-hover>
+          </template>
+        </v-virtual-scroll>
       </div>
     </div>
     <v-pagination
+      elevation="3"
       v-model="currentPage"
       :length="totalPages"
       @update:model-value="changePage"
@@ -176,6 +179,8 @@ const pendingFilterType = ref("any");
 const pendingFilterGenre = ref(null);
 const filterType = ref("any");
 const filterGenre = ref(null);
+
+const scroller = ref(null);
 
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -213,8 +218,8 @@ const applyFilters = () => {
       ? musicGenre[filterGenre.value.replace(/\s/g, "")]
       : null,
   };
-  console.log(filterGenre.value);
   getConcerts(PageRequest, Filters, true);
+  scroller.value.scrollToIndex(0);
 };
 
 const changePage = () => {
@@ -230,7 +235,7 @@ const changePage = () => {
   };
 
   getConcerts(PageRequest, Filters);
-  window.scrollTo(0, 0);
+  scroller.value.scrollToIndex(0);
 };
 
 const getConcerts = async (pageRequest, filters, updateTotalPage = false) => {
@@ -326,7 +331,6 @@ const prev = () => {
 .concerts {
   flex: 4;
   overflow: auto;
-  margin-right: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
 }

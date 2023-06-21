@@ -49,20 +49,23 @@
               </div>
             </v-card-text>
             <div
-                v-if="concert.organizer.email !== store.user.email && shouldShowParticipationButtons"
-                style="padding-left: 15px;"
-              >
-                <div v-if="!concert.isParticipating">
-                  <v-btn color="primary" @click="addParticipant" text>
-                    Participate
-                  </v-btn>
-                </div>
-                <div v-else>
-                  <v-btn color="primary" @click="removeParticipant" text>
-                    Cancel Participation
-                  </v-btn>
-                </div>
+              v-if="
+                concert.organizer.email !== store.user.email &&
+                shouldShowParticipationButtons
+              "
+              style="padding-left: 15px"
+            >
+              <div v-if="!concert.isParticipating">
+                <v-btn color="primary" @click="addParticipant" text>
+                  Participate
+                </v-btn>
               </div>
+              <div v-else>
+                <v-btn color="primary" @click="removeParticipant" text>
+                  Cancel Participation
+                </v-btn>
+              </div>
+            </div>
           </v-card>
         </v-col>
       </v-row>
@@ -71,7 +74,12 @@
           <v-card elevation="10" class="pa-5 mt-5" id="description-card">
             <h2>Concert Description</h2>
             <v-card-text>
-              <p style="white-space: pre-line;" v-if="concert.description !== ''">{{ concert.description }}</p>
+              <p
+                style="white-space: pre-line"
+                v-if="concert.description !== ''"
+              >
+                {{ concert.description }}
+              </p>
               <h4 v-else>This concert has no description.</h4>
             </v-card-text>
           </v-card>
@@ -170,7 +178,7 @@ const shouldShowParticipationButtons = computed(() => {
   var today = new Date().setHours(0, 0, 0, 0);
 
   return concertDate > today;
-})
+});
 
 const parseDate = (dateString) => {
   const date = new Date(dateString);
@@ -183,8 +191,10 @@ const parseDate = (dateString) => {
     minute: "2-digit",
   };
 
-  const localDateString = new Intl.DateTimeFormat("en-US", options).format(date);
-  const formattedDate = localDateString.replace(/,\s/g, ' ');
+  const localDateString = new Intl.DateTimeFormat("en-US", options).format(
+    date
+  );
+  const formattedDate = localDateString.replace(/,\s/g, " ");
   return formattedDate;
 };
 </script>
@@ -200,7 +210,7 @@ const parseDate = (dateString) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  word-wrap: break-word;  
+  word-wrap: break-word;
   height: 100%;
 }
 

@@ -179,11 +179,11 @@ const signUp = async () => {
 
   if (response === 200) {
     resetInputFields();
-    updateAlertValues('success', 'Account was successfully created!', true);
+    updateAlertValues("success", "Account was successfully created!", true);
   } else if (response === 409) {
-    updateAlertValues('error', 'Email already exists.', true);
+    updateAlertValues("error", "Email already exists.", true);
   } else {
-    updateAlertValues('error', 'Sign up error.', true);
+    updateAlertValues("error", "Sign up error.", true);
   }
 };
 
@@ -191,7 +191,7 @@ const updateAlertValues = (status, text, display) => {
   signUpStatus.value = status;
   signUpAlertText.value = text;
   displaySignUpAlert.value = display;
-}
+};
 
 const resetInputFields = () => {
   inputEmail.value = null;
@@ -209,8 +209,7 @@ const togglePasswordVisibility = () => {
 
 <style scoped>
 .background {
-  background: url("../assets/Images/bg2.jpg") no-repeat center
-    center fixed;
+  background: url("../assets/Images/bg2.jpg") no-repeat center center fixed;
   background-size: cover;
 }
 </style>
